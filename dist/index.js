@@ -1,16 +1,13 @@
 "use strict";
-const express = require('express');
-const app = express();
-const port = 8080;
-app.use(express.json());
-const db = {
-    courses: [
-        { id: 1, title: 'front-end' },
-        { id: 2, title: 'back-end' },
-        { id: 3, title: 'automatic qa' },
-        { id: 4, title: 'devops' },
-    ]
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
+const port = process.env.PORT || 5000;
+const parserMiddleware = bodyParser({});
+app.use(express_1.default.json());
 app.get('/', (req, res) => {
     res.send({ message: 'Hello World' });
 });
