@@ -5,9 +5,7 @@ import {coursesRouter} from "./coursesRouter/coursesRouter";
 const app = express()
 const port = process.env.PORT || 5000;
 
-const parserMiddleware = bodyParser({})
-
-app.use(parserMiddleware)
+app.use(bodyParser())
 
 app.get('/', (req: Request, res: Response) => {
     res.send({message: 'Hello World'})

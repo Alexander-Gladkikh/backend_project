@@ -8,8 +8,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const coursesRouter_1 = require("./coursesRouter/coursesRouter");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
-const parserMiddleware = (0, body_parser_1.default)({});
-app.use(parserMiddleware);
+app.use((0, body_parser_1.default)());
 app.get('/', (req, res) => {
     res.send({ message: 'Hello World' });
 });
