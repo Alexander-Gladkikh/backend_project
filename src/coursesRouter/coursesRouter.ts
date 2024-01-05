@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {coursesRepository, CoursesType} from "../coursesRepository/courses-repository";
+import {coursesRepository, CoursesType} from "../repositories/courses-db-repository";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middleware/input-validation-middleware";
 
@@ -48,7 +48,7 @@ coursesRouter.put('/:id',
   async (req, res) => {
   const isUpdated: boolean = await coursesRepository.updateCourse(+req.params.id, req.body.title);
   if(isUpdated) {
-    const course =  coursesRepository.findCoursesById(+req.params.id)
+    const course =  await coursesRepository.findCoursesById(+req.params.id)
     res.send(course)
   } else {
     res.sendStatus(404)
