@@ -1,5 +1,10 @@
+export type CoursesType = {
+  id: number
+  title: string
+}
+
 const db = {
-  courses: [
+  courses: <CoursesType[]> [
     {id: 1, title: 'front-end'},
     {id: 2, title: 'back-end'},
     {id: 3, title: 'automatic qa'},
@@ -7,31 +12,38 @@ const db = {
   ]
 }
 
+const courses = db.courses;
+
 export const coursesRepository = {
-  findCourses(title: string | null | undefined) {
+  async findCourses(title: string | null | undefined): Promise<CoursesType[]> {
     if(title) {
-      return db.courses.filter(c => c.title.indexOf(title) > -1)
+      return courses.filter(c => c.title.indexOf(title) > -1)
     }
     else {
-      return db.courses
+      return courses
     }
   },
 
-  getCoursesById(id: number) {
-    return db.courses.find(c => c.id === id)
+  async findCoursesById(id: number): Promise<CoursesType | null> {
+    let course = courses.find(c => c.id === id)
+    if(course) {
+      return course
+    }else {
+      return null
+    }
   },
 
-  createCourse(title: string) {
+  async createCourse(title: string): Promise<CoursesType> {
     const newCourse = {
       id: +(new Date()),
       title: title
     }
-    db.courses.push(newCourse)
+    courses.push(newCourse)
     return newCourse
   },
 
-  updateCourse(id: number, title: string) {
-    let course = db.courses.find(c => c.id === id)
+  async updateCourse(id: number, title: string):Promise<boolean> {
+    let course = courses.find(c => c.id === id)
     if(course)  {
       course.title = title
       return true
@@ -40,10 +52,10 @@ export const coursesRepository = {
     }
   },
 
-  deleteCourse(id: number) {
-    for(let i = 0; i < db.courses.length; i++) {
-      if(db.courses[i].id === id) {
-        db.courses.splice(i, 1)
+  async deleteCourse(id: number): Promise<boolean> {
+    for(let i = 0; i < courses.length; i++) {
+      if(courses[i].id === id) {
+        courses.splice(i, 1)
         return true
       }
     }

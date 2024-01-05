@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {coursesRepository} from "../coursesRepository/courses-repository";
+import {coursesRepository, CoursesType} from "../coursesRepository/courses-repository";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middleware/input-validation-middleware";
 
@@ -10,33 +10,30 @@ const titleValidation = body('title').trim().isLength({
   max: 10
 }).withMessage('Title length should be from 3 to 10 symbols')
 
-coursesRouter.get('/', (req, res) => {
-  const foundCourses = coursesRepository.findCourses(req.query.title?.toString())
+coursesRouter.get('/', async (req, res) => {
+  const foundCourses: CoursesType[] = await coursesRepository.findCourses(req.query.title?.toString())
   res.json(foundCourses)
 })
 
-coursesRouter.get('/:id', (req, res) => {
-  const foundCourses = coursesRepository.getCoursesById(+req.params.id);
-
+coursesRouter.get('/:id', async(req, res) => {
+  const foundCourses: CoursesType | null = await coursesRepository.findCoursesById(+req.params.id);
   if(!foundCourses) {
     res.sendStatus(404);
     return
   }
-
   res.json(foundCourses)
 })
 
 coursesRouter.post('/',
   titleValidation,
   inputValidationMiddleware,
-  (req, res) => {
-const createdCourse = coursesRepository.createCourse(req.body.title)
-
+  async (req, res) => {
+  const createdCourse: CoursesType = await coursesRepository.createCourse(req.body.title)
   res.status(201).json(createdCourse)
 })
 
-coursesRouter.delete('/:id', (req, res) => {
-const isDeleted = coursesRepository.deleteCourse(+req.params.id);
+coursesRouter.delete('/:id', async(req, res) => {
+const isDeleted: boolean = await coursesRepository.deleteCourse(+req.params.id);
   if(isDeleted) {
    res.sendStatus(204)
   }  else {
@@ -48,10 +45,10 @@ const isDeleted = coursesRepository.deleteCourse(+req.params.id);
 coursesRouter.put('/:id',
   titleValidation,
   inputValidationMiddleware,
-  (req, res) => {
-  const isUpdated = coursesRepository.updateCourse(+req.params.id, req.body.title);
+  async (req, res) => {
+  const isUpdated: boolean = await coursesRepository.updateCourse(+req.params.id, req.body.title);
   if(isUpdated) {
-    const course =  coursesRepository.getCoursesById(+req.params.id)
+    const course =  coursesRepository.findCoursesById(+req.params.id)
     res.send(course)
   } else {
     res.sendStatus(404)
